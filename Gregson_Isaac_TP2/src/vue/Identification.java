@@ -1,4 +1,4 @@
-package vues;
+package vue;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -20,6 +20,8 @@ public class Identification extends JFrame {
 	private ArrayList<JTextField> formFieldInputsList;
 	private ArrayList<JButton> formButtons;
 	
+	private ChoixTraitement fenetreChoixTraitement;
+	
 	private int defaultXValue;
 	private int defaultYValue;
 	private int defaultWidth;
@@ -38,6 +40,8 @@ public class Identification extends JFrame {
 		getContentPane().setLayout(null);
 		
 		title = new JLabel();
+		
+		fenetreChoixTraitement = new ChoixTraitement();
 		
 		resetDefaultInputBoundValues();
 		resetDefaultButtonsBoundValue();
@@ -228,15 +232,10 @@ public class Identification extends JFrame {
 			if (e.getSource() == findButton("Quitter")) {
 				System.exit(0);
 			}else if (e.getSource() == findButton("Valider")) {
-				
+				fenetreChoixTraitement.setVisible(true);
 			}
 		}
 		
 	}
-	
-	public static void main(String[] args) {
-		Identification fenetre = new Identification();
-		fenetre.setVisible(true);
-	}
-	
+
 }
