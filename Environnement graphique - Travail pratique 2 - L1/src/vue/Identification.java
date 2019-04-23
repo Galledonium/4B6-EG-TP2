@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import controleur.ControleurIdentification;
+
 public class Identification extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -20,7 +22,7 @@ public class Identification extends JFrame {
 	private ArrayList<JTextField> formFieldInputsList;
 	private ArrayList<JButton> formButtons;
 	
-	private ChoixTraitement fenetreChoixTraitement;
+	private ControleurIdentification controleur;
 	
 	private int defaultXValue;
 	private int defaultYValue;
@@ -32,9 +34,6 @@ public class Identification extends JFrame {
 	private int defaultButtonWidth;
 	private int defaultButtonHeight;
 	
-	private final String username = "SorakaIs";
-	private final String password = "TheWorstSupport";
-
 	public Identification() {
 		setTitle("Gestion des Albums");
 		setSize(680, 360);
@@ -42,9 +41,9 @@ public class Identification extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		
-		title = new JLabel();
+		controleur = new ControleurIdentification(this);
 		
-		fenetreChoixTraitement = new ChoixTraitement();
+		title = new JLabel();
 		
 		resetDefaultInputBoundValues();
 		resetDefaultButtonsBoundValue();
@@ -216,6 +215,15 @@ public class Identification extends JFrame {
 		}
 	}
 	
+	// Accesseurs
+	public ArrayList<JLabel> getFormFieldNamesList () {
+		return formFieldNamesList;
+	}
+	
+	public ArrayList<JTextField> getFormFieldInputsList () {
+		return formFieldInputsList;
+	}
+	
 	private class ButtonListener implements ActionListener {
 		
 		private JButton findButton (String name) {
@@ -233,13 +241,9 @@ public class Identification extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == findButton("Quitter")) {
-				System.exit(0);
+				controleur.quitter();
 			}else if (e.getSource() == findButton("Valider")) {
-				if (formFieldInputsList.get(0).getText().equals(username) && formFieldInputsList.get(1).getText().equals(password)) {
-					fenetreChoixTraitement.setVisible(true);
-				}else {
-					System.out.println("Pas trouvé");
-				}
+				controleur.valider();
 			}
 		}
 		
