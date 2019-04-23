@@ -4,7 +4,7 @@ public class TestExecution {
 
 	public static void main(String[] args) {
 			
-		VueIdentification fenetre = new VueIdentification();
+		Identification fenetre = new Identification();
 		fenetre.setVisible(true);
 		
 	}
