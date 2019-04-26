@@ -5,8 +5,8 @@ import vue.Identification;
 
 public class ControleurIdentification {
 	
-	private final String username = "SorakaIs";
-	private final String password = "TheWorstSupport";
+	private final String username = "username";
+	private final String password = "password";
 	
 	private Identification identification;
 	
@@ -18,8 +18,12 @@ public class ControleurIdentification {
 	}
 	
 	public void valider () {
-		String username = identification.getFormFieldInputsList().get(0).getText();
-		String password = identification.getFormFieldInputsList().get(1).getText();
+		String username = identification.getUsername();
+		String password = "";
+		
+		for (int indice = 0; indice < identification.getPassword().length; indice++) {
+			password += identification.getPassword()[indice];
+		}
 		
 		if (username.equals(this.username) && password.equals(this.password)) {
 			fenetreChoixTraitement.setVisible(true);

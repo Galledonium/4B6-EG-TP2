@@ -1,6 +1,8 @@
 package vue;
 
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -37,7 +39,7 @@ public class GestionArtistes extends JFrame {
 	private JButton btnModifier;
 	private JButton btnSupprimer;
 	
-	DefaultTableModel tableArtistModel;
+	private DefaultTableModel tableArtistModel;
 	private JTable tableArtist;
 	private JScrollPane tableArtistScrollPane;
 	
@@ -50,6 +52,7 @@ public class GestionArtistes extends JFrame {
 		setTitle("Gestion des Artistes");
 		setSize(1100, 810);
 		getContentPane().setLayout(null);
+		centerWindow();
 		
 		defaultStartingX = 40;
 		defaultStartingY = 20;
@@ -200,5 +203,29 @@ public class GestionArtistes extends JFrame {
 		getContentPane().add(listeAlbums);
 		
 		// TODO Ajouter l'image de l'album sélectonné
+	}
+	
+	private void centerWindow() {
+		 int hauteur = getHeight();
+		 int largeur = getWidth();		
+	     Toolkit tk = Toolkit.getDefaultToolkit();
+	     Dimension d = tk.getScreenSize();
+	     int screenHeight = d.height;
+	     int screenWidth = d.width;
+	      
+	     //vérifier la hauteur  de la fenêtre par rapport à l'écran
+	     if (getHeight() > screenHeight) {
+	       	 hauteur= screenHeight;
+	     }
+	      
+	     //vérifier la largeur  de la fenêtre par rapport à l'écran
+	     if (getWidth() > screenWidth) {
+	       	largeur=screenWidth;
+	     }
+	       
+	     //fixer la taille de la fenêtre
+	     setSize(largeur, hauteur);
+	     //positionner la fenêtre au centre de l'écran
+	     setLocationRelativeTo (null);
 	}
 }

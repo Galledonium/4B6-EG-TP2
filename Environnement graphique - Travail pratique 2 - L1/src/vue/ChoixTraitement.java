@@ -1,9 +1,10 @@
 package vue;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -29,13 +30,13 @@ public class ChoixTraitement extends JDialog {
 	private ControleurChoixTraitement controleur;
 	
 	public ChoixTraitement() {
-		
 		setTitle("Choix du traitement");
 		setSize(600, 400);
 		setResizable(false);
 		setLayout(null);
+		centerWindow();
 		
-		controleur = new ControleurChoixTraitement(this);
+		controleur = new ControleurChoixTraitement();
 		
 		barreOutils = new JToolBar();
 		
@@ -73,6 +74,30 @@ public class ChoixTraitement extends JDialog {
 		
 		getContentPane().add(barreOutils);
 		
+	}
+	
+	private void centerWindow() {
+		 int hauteur = getHeight();
+		 int largeur = getWidth();		
+	     Toolkit tk = Toolkit.getDefaultToolkit();
+	     Dimension d = tk.getScreenSize();
+	     int screenHeight = d.height;
+	     int screenWidth = d.width;
+	      
+	     //vérifier la hauteur  de la fenêtre par rapport à l'écran
+	     if (getHeight() > screenHeight) {
+	       	 hauteur= screenHeight;
+	     }
+	      
+	     //vérifier la largeur  de la fenêtre par rapport à l'écran
+	     if (getWidth() > screenWidth) {
+	       	largeur=screenWidth;
+	     }
+	       
+	     //fixer la taille de la fenêtre
+	     setSize(largeur, hauteur);
+	     //positionner la fenêtre au centre de l'écran
+	     setLocationRelativeTo (null);
 	}
 	
 	private class ButtonListener extends MouseAdapter{
