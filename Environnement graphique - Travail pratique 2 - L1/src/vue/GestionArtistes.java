@@ -1,9 +1,13 @@
 package vue;
 
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -11,6 +15,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+
+import controleur.ControleurGestionArtistes;
+import modele.Artiste;
 
 public class GestionArtistes extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -41,7 +48,13 @@ public class GestionArtistes extends JFrame {
 	private JTable tableArtist;
 	private JScrollPane tableArtistScrollPane;
 	
+	private ArrayList<JComponent> listeElements;
+	
+	private ControleurGestionArtistes controleur;
+	
 	private JList<String> listeAlbums;
+	
+	private ArrayList<Artiste> listeArtistes;
 	
 	private int defaultStartingX;
 	private int defaultStartingY;
@@ -64,16 +77,24 @@ public class GestionArtistes extends JFrame {
 		lblMembre = new JLabel();
 		
 		checkBoxMembre = new JCheckBox();
+		checkBoxMembre.setEnabled(false);
 		
 		txtRechercher = new JTextField();
+		txtRechercher.setEnabled(false);
+		
 		txtNumero = new JTextField();
+		txtRechercher.setEnabled(false);
+		
 		txtNom = new JTextField();
+		txtRechercher.setEnabled(false);
 		
 		btnRechercher = new JButton();
 		btnQuitter = new JButton();
 		btnRemplacer = new JButton();
 		btnNouveau = new JButton();
+		btnNouveau.addMouseListener(new ButtonListener());
 		btnAjouter = new JButton();
+		btnAjouter.addMouseListener(new ButtonListener());
 		btnModifier = new JButton();
 		btnSupprimer = new JButton();
 		
@@ -82,6 +103,15 @@ public class GestionArtistes extends JFrame {
 		tableArtistScrollPane = new JScrollPane(tableArtist);
 		
 		listeAlbums = new JList<String>();
+		listeArtistes = new ArrayList<Artiste>();
+		listeElements = new ArrayList<JComponent>();
+		
+		listeElements.add(txtNumero);
+		listeElements.add(txtNom);
+		listeElements.add(checkBoxMembre);
+		listeElements.add(txtRechercher);
+		
+		controleur = new ControleurGestionArtistes(this);
 		
 		buildInterface();
 	}
@@ -200,5 +230,30 @@ public class GestionArtistes extends JFrame {
 		getContentPane().add(listeAlbums);
 		
 		// TODO Ajouter l'image de l'album sélectonné
+	}
+	
+	public ArrayList<JComponent> getElementList() {
+		
+		return listeElements;
+		
+	}
+	
+	private class ButtonListener extends MouseAdapter{
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			
+			if(e.getSource() == btnNouveau) {
+				
+				
+				
+			}else if(e.getSource() == btnAjouter) {
+				
+				listeArtistes = controleur.getListeArtistes();
+				
+			}
+			
+		}
+		
 	}
 }

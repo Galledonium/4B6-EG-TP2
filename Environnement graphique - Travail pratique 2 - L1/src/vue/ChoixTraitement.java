@@ -35,7 +35,7 @@ public class ChoixTraitement extends JDialog {
 		setResizable(false);
 		setLayout(null);
 		
-		controleur = new ControleurChoixTraitement(this);
+		controleur = new ControleurChoixTraitement();
 		
 		barreOutils = new JToolBar();
 		
