@@ -1,6 +1,8 @@
 package vue;
 
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import controleur.ControleurIdentification;
@@ -17,17 +20,15 @@ public class Identification extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	private JLabel title;
+	private JLabel lblUsername;
+	private JLabel lblPassword;
 	
-	private ArrayList<JLabel> formFieldNamesList;
-	private ArrayList<JTextField> formFieldInputsList;
+	private JTextField txtUsername;
+	private JPasswordField pwPassword;
+	
 	private ArrayList<JButton> formButtons;
 	
 	private ControleurIdentification controleur;
-	
-	private int defaultXValue;
-	private int defaultYValue;
-	private int defaultWidth;
-	private int defaultHeight;
 	
 	private int defaultButtonXValue;
 	private int defaultButtonYValue;
@@ -40,16 +41,19 @@ public class Identification extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
+		centerWindow();
 		
 		controleur = new ControleurIdentification(this);
 		
 		title = new JLabel();
+		lblUsername = new JLabel();
+		lblPassword = new JLabel();
 		
-		resetDefaultInputBoundValues();
+		txtUsername = new JTextField();
+		pwPassword = new JPasswordField();
+		
 		resetDefaultButtonsBoundValue();
 		
-		formFieldNamesList = new ArrayList<JLabel>();
-		formFieldInputsList = new ArrayList<JTextField>();
 		formButtons = new ArrayList<JButton>();
 		
 		buildInterface();
@@ -59,7 +63,8 @@ public class Identification extends JFrame {
 	
 	private void buildInterface () {
 		getContentPane().add(createDefaultTitle());
-		createInputFields();
+		createUsernameInputField();
+		createPasswordInputField();
 		createButtons();
 	}
 	
@@ -75,89 +80,28 @@ public class Identification extends JFrame {
 		return title;
 	}
 	
-	private void createInputFields () {
-		buildInputFieldWithName("Nom d'utilisateur");
-		buildInputFieldWithName("Mot de passe");
+	private void createUsernameInputField () {
+		lblUsername.setText("Nom d'utilisateur");
+		lblUsername.setFont(new Font("Arial", Font.PLAIN, 25));
+		lblUsername.setBounds(150, 100, 200, 35);
 		
-		addInputFieldsWithName();
+		getContentPane().add(lblUsername);
+		
+		txtUsername.setBounds(360, 100, 200, 35);
+		
+		getContentPane().add(txtUsername);
 	}
 	
-	// Crée un input field avec un nom.
-	private void buildInputFieldWithName (String fieldName) {
-		JLabel name = new JLabel(fieldName);
-		name.setFont(new Font("Arial", Font.PLAIN, 25));
+	private void createPasswordInputField () {
+		lblPassword.setText("Nom d'utilisateur");
+		lblPassword.setFont(new Font("Arial", Font.PLAIN, 25));
+		lblPassword.setBounds(150, 145, 200, 35);
 		
-		JTextField field = new JTextField();
-			
-		formFieldNamesList.add(name);
-		formFieldInputsList.add(field);
-	}
-	
-	private void addInputFieldsWithName () {
-		for (JLabel fieldName : formFieldNamesList) {
-			getContentPane().add(fieldName);
-		}
+		getContentPane().add(lblPassword);
 		
-		for (JTextField fieldInput : formFieldInputsList) {
-			getContentPane().add(fieldInput);
-		}
+		pwPassword.setBounds(360, 145, 200, 35);
 		
-		shiftDownAllFields();
-	}
-	
-	private void shiftDownAllFields () {
-		int index = 0;
-		
-		for (JLabel fieldName : formFieldNamesList) {
-			// Le premier field name avec la valeur initiale
-			if (index == 0) {
-				fieldName.setBounds(defaultXValue, defaultYValue, defaultWidth, defaultHeight);
-				
-				index++;
-			}
-			// Les autres ajout seront décalés d'une certaine valeur vers le bas
-			else if (index > 0) {
-				// On augmente la valeur Y par défaut
-				defaultYValue += 45;
-				
-				fieldName.setBounds(defaultXValue, defaultYValue, defaultWidth, defaultHeight);
-				
-				index++;
-			}
-		}
-		
-		// Reset l'indice
-		index = 0;
-		
-		resetDefaultInputBoundValues();
-		
-		for (JTextField fieldInput : formFieldInputsList) {
-			// Le premier field name avec la valeur initiale
-			if (index == 0) {
-				// On augmente la valeur X par défaut pour avoir un décalage entre le nom et le champ d'entré.
-				defaultXValue += 210;
-				
-				fieldInput.setBounds(defaultXValue, defaultYValue, defaultWidth, defaultHeight);
-				
-				index++;
-			}
-			// Les autres ajout seront décalés d'une certaine valeur vers le bas
-			else if (index > 0) {
-				// On augmente la valeur Y par défaut pour avoir un décalage entre les champs supérieurs et ceux inférieurs.
-				defaultYValue += 45;
-				
-				fieldInput.setBounds(defaultXValue, defaultYValue, defaultWidth, defaultHeight);
-				
-				index++;
-			}
-		}
-	}
-	
-	private void resetDefaultInputBoundValues () {
-		defaultXValue = 150;
-		defaultYValue = 100;
-		defaultWidth = 200;
-		defaultHeight = 35;
+		getContentPane().add(pwPassword);
 	}
 	
 	private void createButtons () {
@@ -216,12 +160,36 @@ public class Identification extends JFrame {
 	}
 	
 	// Accesseurs
-	public ArrayList<JLabel> getFormFieldNamesList () {
-		return formFieldNamesList;
+	public String getUsername () {
+		return txtUsername.getText();
 	}
 	
-	public ArrayList<JTextField> getFormFieldInputsList () {
-		return formFieldInputsList;
+	public char[] getPassword () {
+		return pwPassword.getPassword();
+	}
+	
+	private void centerWindow() {
+		 int hauteur = getHeight();
+		 int largeur = getWidth();		
+	     Toolkit tk = Toolkit.getDefaultToolkit();
+	     Dimension d = tk.getScreenSize();
+	     int screenHeight = d.height;
+	     int screenWidth = d.width;
+	      
+	     //vérifier la hauteur  de la fenêtre par rapport à l'écran
+	     if (getHeight() > screenHeight) {
+	       	 hauteur= screenHeight;
+	     }
+	      
+	     //vérifier la largeur  de la fenêtre par rapport à l'écran
+	     if (getWidth() > screenWidth) {
+	       	largeur=screenWidth;
+	     }
+	       
+	     //fixer la taille de la fenêtre
+	     setSize(largeur, hauteur);
+	     //positionner la fenêtre au centre de l'écran
+	     setLocationRelativeTo (null);
 	}
 	
 	private class ButtonListener implements ActionListener {
