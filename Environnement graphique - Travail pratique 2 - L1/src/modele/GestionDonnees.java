@@ -78,7 +78,7 @@ public class GestionDonnees {
 				
 				liste.add(artiste);	
 				
-				System.out.println(artiste.getNomArtiste());
+				System.out.println(artiste.getNom());
 			}
 			
 			controleurArtistes.setListeArtistes(liste);

@@ -36,7 +36,6 @@ public class ControleurGestionArtistes {
 		int isMembre = ((JCheckBox) gestionArtistes.getElementList().get(2)).isSelected() ? 1 : 0;
 		
 		artiste = new Artiste(id, nomArtiste, isMembre);
-		
 	}
 	
 	public ArrayList<Artiste> getListeArtistes() {

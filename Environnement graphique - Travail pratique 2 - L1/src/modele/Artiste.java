@@ -2,32 +2,25 @@ package modele;
 
 public class Artiste {
 	
-	private String id;
-	private String nomArtiste;
-	private Boolean isMembre;
+	private int id;
+	private String nom;
+	private boolean isMembre;
+	private String photo;
 	
 	public Artiste() {
 		
-		
-		
 	}
 	
-	//Puisque SQLite n'a pas de valeur booleene, le constructeur recoit une valeur INTEGER en parametre et la convertie en booleen. (0 pour false et 1 pour true)
-	
-	public Artiste(String id, String nomArtiste, int isMembre) {
+	public Artiste(int id, String nom, boolean isMembre, String photo) {
 		
 		this.id = id;
-		this.nomArtiste = nomArtiste;
-		this.isMembre = isMembre == 1 ? true : false;
+		this.nom = nom;
+		this.isMembre = isMembre;
+		this.photo = photo;
 		
 	}
 	
-	public void setNomArtiste(String nomArtiste) {
-		
-		this.nomArtiste = nomArtiste;
-		
-	}
-	
+	// Vérificateurs
 	public void isMembre(boolean valeur) {
 		
 		this.isMembre = valeur;
@@ -40,15 +33,16 @@ public class Artiste {
 		
 	}
 	
-	public String getID() {
+	// Accesseurs
+	public int getID() {
 		
 		return this.id;
 		
 	}
 	
-	public String getNomArtiste() {
+	public String getNom() {
 		
-		return this.nomArtiste;
+		return this.nom;
 		
 	}
 	
@@ -58,5 +52,16 @@ public class Artiste {
 		
 	}
 	
-
+	public String getPhoto (){
+		
+		return this.photo;
+		
+	}
+	
+	// Mutateurs
+	public void setNom(String nomArtiste) {
+		
+		this.nom = nomArtiste;
+		
+	}
 }

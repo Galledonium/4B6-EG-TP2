@@ -2,14 +2,10 @@ package vue;
 
 import java.awt.Dimension;
 import java.awt.Font;
-<<<<<<< HEAD
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-=======
 import java.awt.Toolkit;
->>>>>>> 8c1d651f324ba301760301b617457c11d640fddb
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -20,7 +16,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-
 import controleur.ControleurGestionArtistes;
 import modele.Artiste;
 
@@ -238,7 +233,6 @@ public class GestionArtistes extends JFrame {
 		// TODO Ajouter l'image de l'album sélectonné
 	}
 	
-<<<<<<< HEAD
 	public ArrayList<JComponent> getElementList() {
 		
 		return listeElements;
@@ -259,10 +253,9 @@ public class GestionArtistes extends JFrame {
 				listeArtistes = controleur.getListeArtistes();
 				
 			}
-			
 		}
-		
-=======
+	}
+
 	private void centerWindow() {
 		 int hauteur = getHeight();
 		 int largeur = getWidth();		
@@ -285,6 +278,5 @@ public class GestionArtistes extends JFrame {
 	     setSize(largeur, hauteur);
 	     //positionner la fenêtre au centre de l'écran
 	     setLocationRelativeTo (null);
->>>>>>> 8c1d651f324ba301760301b617457c11d640fddb
 	}
 }
