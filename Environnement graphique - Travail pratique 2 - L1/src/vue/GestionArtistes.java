@@ -15,9 +15,9 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.ListSelectionModel;
 import controleur.ControleurGestionArtistes;
-import modele.Artiste;
+import modele.ModeleArtiste;
 
 public class GestionArtistes extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -44,17 +44,15 @@ public class GestionArtistes extends JFrame {
 	private JButton btnModifier;
 	private JButton btnSupprimer;
 	
-	private DefaultTableModel tableArtistModel;
-	private JTable tableArtist;
-	private JScrollPane tableArtistScrollPane;
+	private JScrollPane artistTableScrollPane;
+	private ModeleArtiste artistTableModel;
+	private JTable tableArtistes;
 	
 	private ArrayList<JComponent> listeElements;
 	
 	private ControleurGestionArtistes controleur;
 	
 	private JList<String> listeAlbums;
-	
-	private ArrayList<Artiste> listeArtistes;
 	
 	private int defaultStartingX;
 	private int defaultStartingY;
@@ -67,6 +65,8 @@ public class GestionArtistes extends JFrame {
 		
 		defaultStartingX = 40;
 		defaultStartingY = 20;
+		
+		controleur = new ControleurGestionArtistes();
 		
 		lblRecherche = new JLabel();
 		lblArtistes = new JLabel();
@@ -81,13 +81,12 @@ public class GestionArtistes extends JFrame {
 		checkBoxMembre.setEnabled(false);
 		
 		txtRechercher = new JTextField();
-		txtRechercher.setEnabled(false);
 		
 		txtNumero = new JTextField();
-		txtRechercher.setEnabled(false);
+		txtNumero.setEditable(false);
 		
 		txtNom = new JTextField();
-		txtRechercher.setEnabled(false);
+		txtNom.setEditable(false);
 		
 		btnRechercher = new JButton();
 		btnQuitter = new JButton();
@@ -99,20 +98,18 @@ public class GestionArtistes extends JFrame {
 		btnModifier = new JButton();
 		btnSupprimer = new JButton();
 		
-		tableArtistModel = new DefaultTableModel();
-		tableArtist = new JTable(tableArtistModel);
-		tableArtistScrollPane = new JScrollPane(tableArtist);
-		
 		listeAlbums = new JList<String>();
-		listeArtistes = new ArrayList<Artiste>();
 		listeElements = new ArrayList<JComponent>();
+		
+		artistTableModel = new ModeleArtiste(controleur.getListeArtistes());
+		tableArtistes = new JTable(artistTableModel);
+		tableArtistes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		artistTableScrollPane = new JScrollPane(tableArtistes);
 		
 		listeElements.add(txtNumero);
 		listeElements.add(txtNom);
 		listeElements.add(checkBoxMembre);
 		listeElements.add(txtRechercher);
-		
-		controleur = new ControleurGestionArtistes(this);
 		
 		buildInterface();
 	}
@@ -182,11 +179,11 @@ public class GestionArtistes extends JFrame {
 		
 		getContentPane().add(btnRemplacer);
 		
-		tableArtist.setBounds(defaultStartingX + 210, defaultStartingY + 160, 580, 250);
+		artistTableScrollPane.setBounds(defaultStartingX + 210, defaultStartingY + 160, 580, 250);
 		
 		// TODO Ajouter le contenu du tableau
 		
-		getContentPane().add(tableArtist);
+		getContentPane().add(artistTableScrollPane);
 	}
 	
 	private void buildInformationsZone () {
@@ -250,7 +247,7 @@ public class GestionArtistes extends JFrame {
 				
 			}else if(e.getSource() == btnAjouter) {
 				
-				listeArtistes = controleur.getListeArtistes();
+				
 				
 			}
 		}
@@ -278,5 +275,10 @@ public class GestionArtistes extends JFrame {
 	     setSize(largeur, hauteur);
 	     //positionner la fenêtre au centre de l'écran
 	     setLocationRelativeTo (null);
+	}
+	
+	public static void main(String[] args) {
+		GestionArtistes fenetre = new GestionArtistes();
+		fenetre.setVisible(true);
 	}
 }

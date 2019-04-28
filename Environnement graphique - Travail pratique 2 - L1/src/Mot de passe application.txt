@@ -1,2 +1,2 @@
-Username : SorakaIs
-Password : TheWorstSupport
+Username : username
+Password : password

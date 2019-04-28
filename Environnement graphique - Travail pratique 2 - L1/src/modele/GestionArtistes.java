@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class GestionArtistes {
 	private String url;
 	
-	private File databaseDirectory = new File("sqlite/db/Artistes.db");
+	private File databaseDirectory = new File("sqlite/db/bibliotheque.db");
 	
 	private Connection connexion;
 	private Statement statement;
@@ -89,10 +89,5 @@ public class GestionArtistes {
 		}
 		
 		return listeArtistes;
-	}
-	
-	public static void main(String[] args) {
-		GestionArtistes test = new GestionArtistes();
-		test.getArtistes();
 	}
 }
