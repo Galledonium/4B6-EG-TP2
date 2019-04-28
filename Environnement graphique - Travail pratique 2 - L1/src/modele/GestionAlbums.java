@@ -9,7 +9,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class GestionAlbums {
-private String url;
+
+	private String url;
 	
 	private File databaseDirectory = new File("sqlite/db/bibliotheque.db");
 	
@@ -19,7 +20,7 @@ private String url;
 	
 	private int nbrEnregistrement;
 	
-	private ArrayList<Album> listeAlbums;
+	private ArrayList<Artiste> listeArtistes;
 	
 	private String rqtSelectAll;
 	
@@ -31,7 +32,7 @@ private String url;
 		connexion = null;
 		statement = null;
 		
-		listeAlbums = new ArrayList<Album>();
+		listeArtistes = new ArrayList<Artiste>();
 	}
 	
 	public ArrayList<Album> getAlbums () {
@@ -52,19 +53,17 @@ private String url;
 			
 			// Traitement des résultats : Affichage de la requête
 			jeuResultats = statement.executeQuery(rqtSelectAll);
-			System.out.println("Contenu de la table artistes"); // TODO Retirer
 			
 			while (jeuResultats.next()) {
 				int id = jeuResultats.getInt("id");
-				String titre = jeuResultats.getString("titre");
-				String genre = jeuResultats.getString("genre");
-				int anneeSortie = jeuResultats.getInt("anneeSortie");
+				String nom = jeuResultats.getString("nom");
+				boolean isMembre = jeuResultats.getBoolean("isMembre");
+				String photo = jeuResultats.getString("photo");
 				
-				Album album = new Album(id, titre, genre, anneeSortie);
+				Artiste artiste = new Artiste(id, nom, isMembre, photo);
 				
-				listeAlbums.add(album);
+				listeArtistes.add(artiste);
 				
-				System.out.println(id + titre + genre + anneeSortie); // TODO
 			}
 			
 			// System.out.println("\n" + nbrEnregistrement);
@@ -88,6 +87,7 @@ private String url;
 			}
 		}
 		
-		return listeAlbums;
+		return listeArtistes;
 	}
+	
 }

@@ -14,13 +14,16 @@ public class ControleurGestionArtistes {
 	
 	public ControleurGestionArtistes() {
 		gestionnaireArtistes = new GestionArtistes();
+		gestionnaireAlbums = new GestionAlbums();
 	}
 	
 	public ArrayList<Artiste> getListeArtistes () {
 		return gestionnaireArtistes.getArtistes();
 	}
 	
-	public ArrayList<Album> getListeAlbums () {
+	public ArrayList<Album> getListeAlbums(){
+		
 		return gestionnaireAlbums.getAlbums();
+		
 	}
 }

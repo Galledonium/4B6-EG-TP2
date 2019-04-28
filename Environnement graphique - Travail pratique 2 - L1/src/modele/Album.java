@@ -2,17 +2,15 @@ package modele;
 
 public class Album {
 
-	private int id;
+	private String id;
 	private String titre;
 	private String genre;
-	private int anneeSortie;
 	
-	public Album(int id, String titre, String genre, int anneeSortie) {
+	public Album(String id, String titre, String genre) {
 		
 		this.id = id;
 		this.titre = titre;
 		this.genre = genre;
-		this.anneeSortie = anneeSortie;
 		
 	}
 	
@@ -28,13 +26,7 @@ public class Album {
 		
 	}
 	
-	public void setAnneeSortie(int anneeSortie) {
-		
-		this.anneeSortie = anneeSortie;
-		
-	}
-	
-	public int getID() {
+	public String getID() {
 		
 		return this.id;
 		
