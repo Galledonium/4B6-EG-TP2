@@ -1,18 +1,26 @@
 package controleur;
 
 import java.util.ArrayList;
+
+import modele.Album;
 import modele.Artiste;
+import modele.GestionAlbums;
 import modele.GestionArtistes;
 
 public class ControleurGestionArtistes {
 	
-	private GestionArtistes gestionnaire;
+	private GestionArtistes gestionnaireArtistes;
+	private GestionAlbums gestionnaireAlbums;
 	
 	public ControleurGestionArtistes() {
-		gestionnaire = new GestionArtistes();
+		gestionnaireArtistes = new GestionArtistes();
 	}
 	
 	public ArrayList<Artiste> getListeArtistes () {
-		return gestionnaire.getArtistes();
+		return gestionnaireArtistes.getArtistes();
+	}
+	
+	public ArrayList<Album> getListeAlbums () {
+		return gestionnaireAlbums.getAlbums();
 	}
 }
