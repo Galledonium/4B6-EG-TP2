@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import exercice3.Employes;
+
 public class GestionArtistes {
 	private String url;
 	
@@ -90,4 +92,34 @@ public class GestionArtistes {
 		
 		return listeArtistes;
 	}
+	
+	public void ajouterArtiste(Artiste artiste) {
+		
+		String sqlInsertStatement;
+		
+			
+		sqlInsertStatement = "INSERT INTO Artistes Values('" + artiste.getID() + "', '" + artiste.getNom() 
+		+ "', '" + artiste.getMembre() + "', '" + artiste.getPhoto() + "')";
+			
+		try {
+				
+			Class.forName("org.sqlite.JDBC");
+				
+			// Établir une connexion à la base de données
+			connexion = DriverManager.getConnection(url);
+				
+			// Créer une zone de déclaration de requête
+			statement = connexion.createStatement();
+				
+			statement.executeUpdate(sqlInsertStatement);
+							
+				
+		}catch (ClassNotFoundException cnfe) {
+			System.out.println("ERREUR : Driver manquant.");
+		}catch (SQLException se) {
+			System.out.println("ERREUR SQL : " + se);
+		}
+		
+	}
+	
 }
