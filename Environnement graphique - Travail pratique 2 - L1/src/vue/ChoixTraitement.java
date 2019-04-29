@@ -36,7 +36,7 @@ public class ChoixTraitement extends JDialog {
 		setLayout(null);
 		centerWindow();
 		
-		controleur = new ControleurChoixTraitement();
+		controleur = new ControleurChoixTraitement(this);
 		
 		barreOutils = new JToolBar();
 		
@@ -110,9 +110,7 @@ public class ChoixTraitement extends JDialog {
 			}else if(e.getSource() == choixTraitementAlbums) {
 				
 			}else if(e.getSource() == choixQuitter) {
-				
 				dispose();
-				
 			}
 		}
 	}

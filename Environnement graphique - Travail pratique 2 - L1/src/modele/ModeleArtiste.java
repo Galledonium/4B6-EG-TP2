@@ -15,6 +15,26 @@ public class ModeleArtiste extends AbstractTableModel {
 		this.data = data;
 	}
 	
+	public void deleteData() {
+        int rows = getRowCount();
+        if (rows == 0) {
+            return;
+        }
+        data.clear();
+        fireTableRowsDeleted(0, rows - 1);
+    }
+	
+	public void refresh (ArrayList<Artiste> data) {
+		this.data = data;
+		this.fireTableDataChanged();
+	}
+	
+	public int getSelectedIndex () {
+		// TODO
+		
+		return 0;
+	}
+	
 	@Override
 	public int getColumnCount() {
 		return columns.length;
@@ -52,9 +72,5 @@ public class ModeleArtiste extends AbstractTableModel {
         case 2: return Boolean.class;
         default: throw new IllegalArgumentException(" index de colonne invalide: " + columnIndex);
 	  }
-	}
-	
-	public static void main(String[] args) {
-		
 	}
 }

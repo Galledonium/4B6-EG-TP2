@@ -2,6 +2,8 @@ package vue;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -16,7 +18,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
+
 import controleur.ControleurGestionArtistes;
+import modele.Artiste;
 import modele.ModeleArtiste;
 
 public class GestionArtistes extends JFrame {
@@ -43,10 +52,12 @@ public class GestionArtistes extends JFrame {
 	private JButton btnAjouter;
 	private JButton btnModifier;
 	private JButton btnSupprimer;
+	private JButton btnAnnuler;
 	
 	private JScrollPane artistTableScrollPane;
 	private ModeleArtiste artistTableModel;
 	private JTable tableArtistes;
+	private DefaultTableCellRenderer centerRenderer;
 	
 	private ArrayList<JComponent> listeElements;
 	
@@ -57,9 +68,16 @@ public class GestionArtistes extends JFrame {
 	private int defaultStartingX;
 	private int defaultStartingY;
 	
+	private ModificationArtiste modification;
+	
+	private GestionArtistes vueArtisteCourant = this;
+	
+	private ChoixTraitement parent;
+	
 	public GestionArtistes() {
 		setTitle("Gestion des Artistes");
 		setSize(1100, 810);
+		setResizable(false);
 		getContentPane().setLayout(null);
 		centerWindow();
 		
@@ -67,6 +85,7 @@ public class GestionArtistes extends JFrame {
 		defaultStartingY = 20;
 		
 		controleur = new ControleurGestionArtistes();
+		modification = new ModificationArtiste(this);
 		
 		lblRecherche = new JLabel();
 		lblArtistes = new JLabel();
@@ -78,40 +97,96 @@ public class GestionArtistes extends JFrame {
 		lblMembre = new JLabel();
 		
 		checkBoxMembre = new JCheckBox();
-		checkBoxMembre.setEnabled(false);
 		
 		txtRechercher = new JTextField();
 		
 		txtNumero = new JTextField();
-		txtNumero.setEditable(false);
 		
 		txtNom = new JTextField();
-		txtNom.setEditable(false);
+		txtNom.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				
+				
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				
+				if(!txtNom.getText().isEmpty()) {
+					
+					btnAjouter.setEnabled(true);
+					
+				}else {
+					
+					btnAjouter.setEnabled(false);
+					
+				}
+				
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				
+				if(!txtNom.getText().isEmpty()) {
+					
+					btnAjouter.setEnabled(true);
+					
+				}else {
+					
+					btnAjouter.setEnabled(false);
+					
+				}
+				
+			}
+			
+			
+		});
 		
 		btnRechercher = new JButton();
 		btnQuitter = new JButton();
 		btnRemplacer = new JButton();
 		btnNouveau = new JButton();
-		btnNouveau.addMouseListener(new ButtonListener());
 		btnAjouter = new JButton();
-		btnAjouter.addMouseListener(new ButtonListener());
 		btnModifier = new JButton();
 		btnSupprimer = new JButton();
+		btnAnnuler = new JButton();
 		
 		listeAlbums = new JList<String>();
-		listeElements = new ArrayList<JComponent>();
 		
 		artistTableModel = new ModeleArtiste(controleur.getListeArtistes());
+		
 		tableArtistes = new JTable(artistTableModel);
 		tableArtistes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		artistTableScrollPane = new JScrollPane(tableArtistes);
+		centerRenderer = new DefaultTableCellRenderer(); // Pour centrer
+		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+		tableArtistes.getColumnModel().getColumn(0).setCellRenderer(centerRenderer); // Centrer seulement la première colonne
 		
-		listeElements.add(txtNumero);
-		listeElements.add(txtNom);
-		listeElements.add(checkBoxMembre);
-		listeElements.add(txtRechercher);
+		// Ajout des listeners au boutons
+		btnRechercher.addActionListener(new ButtonListener());
+		btnQuitter.addActionListener(new ButtonListener());
+		btnRemplacer.addActionListener(new ButtonListener());
+		btnNouveau.addActionListener(new ButtonListener());
+		btnAjouter.addActionListener(new ButtonListener());
+		btnModifier.addActionListener(new ButtonListener());
+		btnSupprimer.addActionListener(new ButtonListener());
+		btnAnnuler.addActionListener(new ButtonListener());
+		
+		// Ajout de listener pour le tableau
+		tableArtistes.addMouseListener(new MouseListener());
 		
 		buildInterface();
+	}
+	
+	public void refreshTable () {
+		artistTableModel.deleteData();
+		artistTableModel.refresh(controleur.getListeArtistes());
+	}
+	
+	public void setParent (ChoixTraitement parent){
+		this.parent = parent;
 	}
 	
 	private void buildInterface () {
@@ -150,16 +225,19 @@ public class GestionArtistes extends JFrame {
 		getContentPane().add(btnNouveau);
 		
 		btnAjouter.setText("Ajouter");
+		btnAjouter.setEnabled(false);
 		btnAjouter.setBounds(defaultStartingX + 840, defaultStartingY + 232, 150, 35);
 		
 		getContentPane().add(btnAjouter);
 		
 		btnModifier.setText("Modifier");
+		btnModifier.setEnabled(false);
 		btnModifier.setBounds(defaultStartingX + 840, defaultStartingY + 304, 150, 35);
 		
 		getContentPane().add(btnModifier);
 		
 		btnSupprimer.setText("Supprimer");
+		btnSupprimer.setEnabled(false);
 		btnSupprimer.setBounds(defaultStartingX + 840, defaultStartingY + 376, 150, 35);
 		
 		getContentPane().add(btnSupprimer);
@@ -200,6 +278,7 @@ public class GestionArtistes extends JFrame {
 		getContentPane().add(lblNumero);
 		
 		txtNumero.setBounds(defaultStartingX + 110, defaultStartingY + 500, 370, 45);
+		txtNumero.setEditable(false);
 		
 		getContentPane().add(txtNumero);
 		
@@ -210,6 +289,7 @@ public class GestionArtistes extends JFrame {
 		getContentPane().add(lblNom);
 		
 		txtNom.setBounds(defaultStartingX + 110, defaultStartingY + 550, 370, 45);
+		txtNom.setEditable(false);
 		
 		getContentPane().add(txtNom);
 		
@@ -220,8 +300,15 @@ public class GestionArtistes extends JFrame {
 		getContentPane().add(lblMembre);
 		
 		checkBoxMembre.setBounds(defaultStartingX + 110, defaultStartingY + 600, 370, 45);
+		checkBoxMembre.setEnabled(false);
 		
 		getContentPane().add(checkBoxMembre);
+		
+		btnAnnuler.setText("Annuler");
+		btnAnnuler.setEnabled(false);
+		btnAnnuler.setBounds(defaultStartingX, defaultStartingY + 648, 150, 35);
+		
+		getContentPane().add(btnAnnuler);
 		
 		listeAlbums.setBounds(defaultStartingX + 500, defaultStartingY + 500, 290, 180);
 		
@@ -230,25 +317,87 @@ public class GestionArtistes extends JFrame {
 		// TODO Ajouter l'image de l'album sélectonné
 	}
 	
-	public ArrayList<JComponent> getElementList() {
-		
-		return listeElements;
-		
-	}
 	
-	private class ButtonListener extends MouseAdapter{
+	private class ButtonListener implements ActionListener{
 		
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			
-			if(e.getSource() == btnNouveau) {
+		public void actionPerformed(ActionEvent e) {
+			if(e.getSource() == btnRechercher) {
 				
+			}else if(e.getSource() == btnQuitter) {
+				dispose();
 				
+				if (parent != null) { // Si il a une fenetre parent
+					parent.setVisible(true);
+				}
+			}else if(e.getSource() == btnRemplacer) {
+				
+			}else if(e.getSource() == btnNouveau) {
+				
+				btnAnnuler.setEnabled(true);
+				
+				txtNumero.setText(Integer.toString(controleur.getLastIndex()));
+				
+				txtNom.setText("");
+				txtNom.setEnabled(true);
+				txtNom.setEditable(true);
+				
+				checkBoxMembre.setSelected(false);
+				checkBoxMembre.setEnabled(true);
 				
 			}else if(e.getSource() == btnAjouter) {
 				
+				if(!txtNom.getText().isEmpty()) {
+					
+					Artiste artiste = new Artiste(Integer.parseInt(txtNumero.getText()), txtNom.getText(), checkBoxMembre.isSelected(), "images/artistes/default.png");
+					
+					controleur.addArtiste(artiste);
+					
+					txtNumero.setText("");
+					txtNom.setText("");
+					checkBoxMembre.setSelected(false);
+					
+					txtNom.setEnabled(false);
+					txtNom.setEditable(false);
+					checkBoxMembre.setEnabled(false);
+					
+					btnAjouter.setEnabled(false);
+					btnAnnuler.setEnabled(false);
+					
+					refreshTable();
+				}
 				
+			}else if(e.getSource() == btnModifier) {
+				controleur.modifier(vueArtisteCourant);
+			}else if(e.getSource() == btnSupprimer) {
 				
+			}else if (e.getSource() == btnAnnuler) {
+				btnAjouter.setEnabled(false);
+				
+				txtNumero.setText("");
+				txtNom.setText("");
+				checkBoxMembre.setSelected(false);
+				
+				btnAnnuler.setEnabled(false);
+			}
+		}
+	}
+	
+	private class MouseListener extends MouseAdapter {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() == 1) {
+				if (tableArtistes.getSelectedRow() != -1) {
+					btnModifier.setEnabled(true);
+					btnSupprimer.setEnabled(true);
+				}else {
+					btnModifier.setEnabled(false);
+					btnSupprimer.setEnabled(false);
+				}
+			}else if (e.getClickCount() == 2) {
+				if (tableArtistes.getSelectedRow() != -1) {
+					controleur.modifier(vueArtisteCourant);
+				}
 			}
 		}
 	}
@@ -277,7 +426,7 @@ public class GestionArtistes extends JFrame {
 	     setLocationRelativeTo (null);
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) { // TODO Retirer
 		GestionArtistes fenetre = new GestionArtistes();
 		fenetre.setVisible(true);
 	}

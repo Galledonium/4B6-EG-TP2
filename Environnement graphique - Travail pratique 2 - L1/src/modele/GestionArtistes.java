@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import exercice3.Employes;
 
 public class GestionArtistes {
 	private String url;
@@ -23,29 +22,67 @@ public class GestionArtistes {
 	
 	private ArrayList<Artiste> listeArtistes;
 	
-	private String rqtSelectAll;
+	private String request;
 	
 	public GestionArtistes () {
 		url = "jdbc:sqlite:" + databaseDirectory.getPath();
 		
-		rqtSelectAll = "SELECT * FROM Artiste;";
+		request = "";
 		
 		connexion = null;
 		statement = null;
 		
+		nbrEnregistrement = 0;
+		
 		listeArtistes = new ArrayList<Artiste>();
+		
+		open();
 	}
 	
-	public ArrayList<Artiste> getArtistes () {
+	private void open() {
+		
 		try {
-			Class.forName("org.sqlite.JDBC");
-			System.out.println("Pilote chargé\n"); //TODO Retirer une fois l'app terminé
 			
-			// Établir une connexion à la base de données
+			Class.forName("org.sqlite.JDBC");
+			
 			connexion = DriverManager.getConnection(url);
 			
-			// Créer une zone de déclaration de requête
 			statement = connexion.createStatement();
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.out.println("Pilote chargé\n"); //TODO Retirer une fois l'app terminé
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void close() {
+		
+		try {
+			if (statement != null) {
+				statement.close();
+			}
+				
+			if (connexion != null) {
+				connexion.close();
+			}
+		}catch (SQLException se) {
+			System.out.println("ERREUR : " + se);
+		}
+	
+	}
+
+	public ArrayList<Artiste> getArtistes () {
+		try {
+			
+			this.open();
+			
+			request = "SELECT * FROM Artistes;";
 			
 			/*
 			nbrEnregistrement = statement.executeUpdate(rqtInsertion1);
@@ -53,7 +90,7 @@ public class GestionArtistes {
 			*/
 			
 			// Traitement des résultats : Affichage de la requête
-			jeuResultats = statement.executeQuery(rqtSelectAll);
+			jeuResultats = statement.executeQuery(request);
 			System.out.println("Contenu de la table artistes"); // TODO Retirer
 			
 			while (jeuResultats.next()) {
@@ -72,54 +109,73 @@ public class GestionArtistes {
 			// System.out.println("\n" + nbrEnregistrement);
 			System.out.println("\nConnexion établie"); // TODO Retirer
 			
-		}catch (ClassNotFoundException cnfe) {
-			System.out.println("ERREUR : Driver manquant.");
 		}catch (SQLException se) {
 			System.out.println("ERREUR SQL : " + se);
 		}finally {
-			try {
-				if (statement != null) {
-					statement.close();
-				}
-				
-				if (connexion != null) {
-					connexion.close();
-				}
-			}catch (SQLException se) {
-				System.out.println("ERREUR : " + se);
-			}
+			
+			this.close();
+			
 		}
 		
 		return listeArtistes;
 	}
 	
-	public void ajouterArtiste(Artiste artiste) {
+	public int getLastIndex() {
 		
-		String sqlInsertStatement;
 		
-			
-		sqlInsertStatement = "INSERT INTO Artistes Values('" + artiste.getID() + "', '" + artiste.getNom() 
-		+ "', '" + artiste.getMembre() + "', '" + artiste.getPhoto() + "')";
-			
+		
 		try {
+			
+			this.open();
+			
+			request = "SELECT * from Artistes WHERE id > " + nbrEnregistrement + ";";
+			
+			jeuResultats = statement.executeQuery(request);
+			
+			while(jeuResultats.next()) {
 				
-			Class.forName("org.sqlite.JDBC");
+				nbrEnregistrement = jeuResultats.getInt("id");
 				
-			// Établir une connexion à la base de données
-			connexion = DriverManager.getConnection(url);
-				
-			// Créer une zone de déclaration de requête
-			statement = connexion.createStatement();
-				
-			statement.executeUpdate(sqlInsertStatement);
-							
-				
-		}catch (ClassNotFoundException cnfe) {
-			System.out.println("ERREUR : Driver manquant.");
-		}catch (SQLException se) {
+			}
+			
+		} catch (SQLException se) {
+			// TODO Auto-generated catch block
 			System.out.println("ERREUR SQL : " + se);
+		}finally {
+			
+			this.close();
+			
 		}
 		
+		return nbrEnregistrement + 1;
+			
 	}
-	
+
+	public void addArtiste(Artiste artiste) {
+		
+		String sqlInsertStatement = "INSERT INTO Artistes Values('" 
+									+ artiste.getID() + "', '" 
+									+ artiste.getNom() + "', '"
+									+ (artiste.getMembre() ? 1 : 0) + "', '"
+									+ artiste.getPhoto() + "')";
+			
+		try {
+			
+			this.open();
+				
+			statement = connexion.createStatement();
+			
+			statement.executeUpdate(sqlInsertStatement);
+			
+			listeArtistes.add(artiste);
+									
+		}catch (SQLException se) {
+				System.out.println("ERREUR SQL : " + se);
+		}finally {
+			
+			this.close();
+			
+		}
+			
+	}
 }
