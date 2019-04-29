@@ -52,4 +52,10 @@ public class Album {
 		
 	}
 	
+	public int getAnneeSortie() {
+		
+		return this.anneeSortie;
+		
+	}
+	
 }

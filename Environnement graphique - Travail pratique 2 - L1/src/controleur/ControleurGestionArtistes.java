@@ -43,4 +43,10 @@ public class ControleurGestionArtistes {
 		modification = new ModificationArtiste(vue);
 		modification.setVisible(true);
 	}
+	
+	public ArrayList<Artiste> rechercherArtiste(String terme){
+		
+		return gestionnaireArtistes.rechercherArtiste(terme);
+		
+	}
 }

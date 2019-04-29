@@ -8,6 +8,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.awt.Toolkit;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -25,6 +27,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import controleur.ControleurGestionArtistes;
+import modele.Album;
 import modele.Artiste;
 import modele.ModeleArtiste;
 
@@ -46,6 +49,7 @@ public class GestionArtistes extends JFrame {
 	private JTextField txtNom;
 	
 	private JButton btnRechercher;
+	private JButton btnAnnulerRecherche;
 	private JButton btnQuitter;
 	private JButton btnRemplacer;
 	private JButton btnNouveau;
@@ -59,11 +63,12 @@ public class GestionArtistes extends JFrame {
 	private JTable tableArtistes;
 	private DefaultTableCellRenderer centerRenderer;
 	
-	private ArrayList<JComponent> listeElements;
-	
 	private ControleurGestionArtistes controleur;
 	
 	private JList<String> listeAlbums;
+	private DefaultListModel<String> listeNomsAlbums;
+	
+	private ArrayList<Album> albums;
 	
 	private int defaultStartingX;
 	private int defaultStartingY;
@@ -80,6 +85,9 @@ public class GestionArtistes extends JFrame {
 		setResizable(false);
 		getContentPane().setLayout(null);
 		centerWindow();
+		
+		albums = new ArrayList<>();
+		listeNomsAlbums = new DefaultListModel<String>();
 		
 		defaultStartingX = 40;
 		defaultStartingY = 20;
@@ -99,6 +107,45 @@ public class GestionArtistes extends JFrame {
 		checkBoxMembre = new JCheckBox();
 		
 		txtRechercher = new JTextField();
+		txtRechercher.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				
+				if(!txtRechercher.getText().isEmpty()) {
+					
+					btnRechercher.setEnabled(true);
+					
+				}else {
+					
+					btnRechercher.setEnabled(false);
+					
+				}
+				
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				
+				if(!txtRechercher.getText().isEmpty()) {
+					
+					btnRechercher.setEnabled(true);
+					
+				}else {
+					
+					btnRechercher.setEnabled(false);
+					
+				}
+				
+			}
+			
+		});
 		
 		txtNumero = new JTextField();
 		
@@ -145,6 +192,7 @@ public class GestionArtistes extends JFrame {
 		});
 		
 		btnRechercher = new JButton();
+		btnAnnulerRecherche = new JButton();
 		btnQuitter = new JButton();
 		btnRemplacer = new JButton();
 		btnNouveau = new JButton();
@@ -153,7 +201,7 @@ public class GestionArtistes extends JFrame {
 		btnSupprimer = new JButton();
 		btnAnnuler = new JButton();
 		
-		listeAlbums = new JList<String>();
+		listeAlbums = new JList<String>(listeNomsAlbums);
 		
 		artistTableModel = new ModeleArtiste(controleur.getListeArtistes());
 		
@@ -173,6 +221,7 @@ public class GestionArtistes extends JFrame {
 		btnModifier.addActionListener(new ButtonListener());
 		btnSupprimer.addActionListener(new ButtonListener());
 		btnAnnuler.addActionListener(new ButtonListener());
+		btnAnnulerRecherche.addActionListener(new ButtonListener());
 		
 		// Ajout de listener pour le tableau
 		tableArtistes.addMouseListener(new MouseListener());
@@ -208,9 +257,16 @@ public class GestionArtistes extends JFrame {
 		getContentPane().add(txtRechercher);
 		
 		btnRechercher.setText("Rechercher");
+		btnRechercher.setEnabled(false);
 		btnRechercher.setBounds(defaultStartingX + 380, defaultStartingY + 45, 150, 35);
 		
 		getContentPane().add(btnRechercher);
+		
+		btnAnnulerRecherche.setText("Annuler");
+		btnAnnulerRecherche.setEnabled(false);
+		btnAnnulerRecherche.setBounds(defaultStartingX + 540, defaultStartingY + 45, 150, 35);
+		
+		getContentPane().add(btnAnnulerRecherche);
 	}
 	
 	private void addDefaultControlerButtons () {
@@ -324,12 +380,36 @@ public class GestionArtistes extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == btnRechercher) {
 				
+				btnAnnulerRecherche.setEnabled(true);
+				btnModifier.setEnabled(false);
+				btnSupprimer.setEnabled(false);
+				
+				artistTableModel.refresh(controleur.rechercherArtiste(txtRechercher.getText()));
+				
+				artistTableModel.fireTableDataChanged();
+				
+				
+			}else if(e.getSource() == btnAnnulerRecherche) {
+				
+				txtRechercher.setText("");
+				
+				btnRechercher.setEnabled(false);
+				btnAnnulerRecherche.setEnabled(false);
+				btnModifier.setEnabled(false);
+				btnSupprimer.setEnabled(false);
+				
+				artistTableModel.refresh(controleur.getListeArtistes());
+				
+				artistTableModel.fireTableDataChanged();
+				
 			}else if(e.getSource() == btnQuitter) {
+				
 				dispose();
 				
 				if (parent != null) { // Si il a une fenetre parent
 					parent.setVisible(true);
 				}
+				
 			}else if(e.getSource() == btnRemplacer) {
 				
 			}else if(e.getSource() == btnNouveau) {
@@ -368,7 +448,9 @@ public class GestionArtistes extends JFrame {
 				}
 				
 			}else if(e.getSource() == btnModifier) {
+				
 				controleur.modifier(vueArtisteCourant);
+				
 			}else if(e.getSource() == btnSupprimer) {
 				
 			}else if (e.getSource() == btnAnnuler) {
@@ -386,18 +468,36 @@ public class GestionArtistes extends JFrame {
 	private class MouseListener extends MouseAdapter {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 1) {
-				if (tableArtistes.getSelectedRow() != -1) {
-					btnModifier.setEnabled(true);
-					btnSupprimer.setEnabled(true);
-				}else {
-					btnModifier.setEnabled(false);
-					btnSupprimer.setEnabled(false);
+			if (tableArtistes.getSelectedRow() != -1) {
+				
+				btnModifier.setEnabled(true);
+				btnSupprimer.setEnabled(true);
+				
+				albums.clear();
+				listeNomsAlbums.clear();
+				
+				albums = controleur.getListeAlbums(tableArtistes.getSelectedRow() + 1);
+				
+				for(Album album : albums) {
+					
+					listeNomsAlbums.addElement(Integer.toString(album.getAnneeSortie()) + " - " + album.getTitre());
+					
 				}
+			
+			}else if(tableArtistes.getSelectedRow() == -1) {
+				
+				btnModifier.setEnabled(false);
+				btnSupprimer.setEnabled(false);
+				
+				listeNomsAlbums.clear();
+			
 			}else if (e.getClickCount() == 2) {
+				
 				if (tableArtistes.getSelectedRow() != -1) {
+					
 					controleur.modifier(vueArtisteCourant);
 				}
+				
 			}
 		}
 	}

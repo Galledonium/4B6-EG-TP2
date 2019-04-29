@@ -8,6 +8,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import controleur.ControleurModificationArtiste;
 
 public class ModificationArtiste extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -20,6 +21,8 @@ public class ModificationArtiste extends JDialog {
 	
 	private JCheckBox checkBoxMembre;
 	
+	private ControleurModificationArtiste controleur;
+	
 	private GestionArtistes parent;
 	
 	public ModificationArtiste (GestionArtistes parent) {
@@ -28,6 +31,8 @@ public class ModificationArtiste extends JDialog {
 		setResizable(false);
 		getContentPane().setLayout(null);
 		centerWindow();
+		
+		controleur = new ControleurModificationArtiste();
 		
 		this.parent = parent;
 		

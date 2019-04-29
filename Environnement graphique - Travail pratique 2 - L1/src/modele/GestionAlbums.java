@@ -21,38 +21,64 @@ private String url;
 	
 	private ArrayList<Album> listeAlbums;
 	
-	private String rqtSelectAll;
+	private String request;
 	
 	public GestionAlbums () {
 		url = "jdbc:sqlite:" + databaseDirectory.getPath();
 		
-		rqtSelectAll = "SELECT * FROM Albums;";
+		request = "";
 		
 		connexion = null;
 		statement = null;
 		
 		listeAlbums = new ArrayList<Album>();
+		
+		open();
+	}
+	
+	private void open() {
+			
+		try {
+			
+			Class.forName("org.sqlite.JDBC");
+			connexion = DriverManager.getConnection(url);
+			
+			statement = connexion.createStatement();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	private void close() {
+		
+		try {
+			if (statement != null) {
+				statement.close();
+			}
+				
+			if (connexion != null) {
+				connexion.close();
+			}
+		}catch (SQLException se) {
+			System.out.println("ERREUR : " + se);
+		}
+	
 	}
 	
 	public ArrayList<Album> getAlbums (int idArtiste) {
 		try {
-			Class.forName("org.sqlite.JDBC");
-			System.out.println("Pilote chargé\n"); //TODO Retirer une fois l'app terminé
 			
-			// Établir une connexion à la base de données
-			connexion = DriverManager.getConnection(url);
+			open();
 			
-			// Créer une zone de déclaration de requête
-			statement = connexion.createStatement();
+			request = "SELECT * FROM Albums WHERE idArtiste = " + idArtiste + ";";
 			
-			/*
-			nbrEnregistrement = statement.executeUpdate(rqtInsertion1);
-			nbrEnregistrement = statement.executeUpdate(rqtInsertion2);
-			*/
-			
-			// Traitement des résultats : Affichage de la requête
-			jeuResultats = statement.executeQuery(rqtSelectAll);
-			System.out.println("Contenu de la table artistes"); // TODO Retirer
+			jeuResultats = statement.executeQuery(request);
 			
 			while (jeuResultats.next()) {
 				int id = jeuResultats.getInt("id");
@@ -70,22 +96,12 @@ private String url;
 			// System.out.println("\n" + nbrEnregistrement);
 			System.out.println("\nConnexion établie"); // TODO Retirer
 			
-		}catch (ClassNotFoundException cnfe) {
-			System.out.println("ERREUR : Driver manquant.");
 		}catch (SQLException se) {
 			System.out.println("ERREUR SQL : " + se);
 		}finally {
-			try {
-				if (statement != null) {
-					statement.close();
-				}
-				
-				if (connexion != null) {
-					connexion.close();
-				}
-			}catch (SQLException se) {
-				System.out.println("ERREUR : " + se);
-			}
+			
+			close();
+			
 		}
 		
 		return listeAlbums;

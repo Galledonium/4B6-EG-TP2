@@ -78,6 +78,9 @@ public class GestionArtistes {
 	}
 
 	public ArrayList<Artiste> getArtistes () {
+		
+		listeArtistes.clear();
+		
 		try {
 			
 			this.open();
@@ -118,6 +121,46 @@ public class GestionArtistes {
 		}
 		
 		return listeArtistes;
+	}
+	
+	public ArrayList<Artiste> rechercherArtiste(String terme){
+		
+		listeArtistes.clear();
+		
+		try {
+			
+			this.open();
+			
+			request = "SELECT * from Artistes WHERE UPPER(nom) LIKE UPPER('%" + terme + "%');";
+			
+			jeuResultats = statement.executeQuery(request);
+			
+			while(jeuResultats.next()) {
+				
+				int id = jeuResultats.getInt("id");
+				String nom = jeuResultats.getString("nom");
+				boolean isMembre = jeuResultats.getBoolean("isMembre");
+				String photo = jeuResultats.getString("photo");
+				
+				Artiste artiste = new Artiste(id, nom, isMembre, photo);
+				
+				listeArtistes.add(artiste);
+				
+			}
+			
+			statement.executeUpdate(request);
+			
+		} catch (SQLException se) {
+			// TODO Auto-generated catch block
+			System.out.println("ERREUR SQL : " + se);
+		}finally {
+			
+			this.close();
+			
+		}
+		
+		return listeArtistes;
+		
 	}
 	
 	public int getLastIndex() {
@@ -162,8 +205,6 @@ public class GestionArtistes {
 		try {
 			
 			this.open();
-				
-			statement = connexion.createStatement();
 			
 			statement.executeUpdate(sqlInsertStatement);
 			
@@ -177,5 +218,11 @@ public class GestionArtistes {
 			
 		}
 			
+	}
+
+	public void modifierArtiste(String nom, boolean isMembre) {
+		
+		
+		
 	}
 }
