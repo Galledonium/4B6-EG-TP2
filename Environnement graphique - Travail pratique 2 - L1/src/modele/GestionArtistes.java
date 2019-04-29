@@ -196,7 +196,9 @@ public class GestionArtistes {
 
 	public void addArtiste(Artiste artiste) {
 		
-		String sqlInsertStatement = "INSERT INTO Artistes Values('" 
+		listeArtistes.clear();
+		
+		request = "INSERT INTO Artistes Values('" 
 									+ artiste.getID() + "', '" 
 									+ artiste.getNom() + "', '"
 									+ (artiste.getMembre() ? 1 : 0) + "', '"
@@ -206,7 +208,7 @@ public class GestionArtistes {
 			
 			this.open();
 			
-			statement.executeUpdate(sqlInsertStatement);
+			statement.executeUpdate(request);
 			
 			listeArtistes.add(artiste);
 									
@@ -224,5 +226,28 @@ public class GestionArtistes {
 		
 		
 		
+	}
+
+	public void deleteArtiste(int idArtiste) {
+		
+		request = "DELETE FROM Artistes WHERE id = " + idArtiste + ";";
+
+		try {
+
+			this.open();
+			
+			statement.executeUpdate(request);
+
+				
+		}catch (SQLException se) {
+			
+			System.out.println("ERREUR SQL : " + se);
+			
+		}finally {
+
+			this.close();
+
+		}
+
 	}
 }

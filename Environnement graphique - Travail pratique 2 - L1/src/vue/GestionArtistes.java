@@ -16,6 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -238,6 +239,12 @@ public class GestionArtistes extends JFrame {
 		this.parent = parent;
 	}
 	
+	public JTable getTableArtists() {
+		
+		return tableArtistes;
+		
+	}
+	
 	private void buildInterface () {
 		buildSearchZone();
 		buildArtistsZone();
@@ -425,6 +432,11 @@ public class GestionArtistes extends JFrame {
 				checkBoxMembre.setSelected(false);
 				checkBoxMembre.setEnabled(true);
 				
+				btnModifier.setEnabled(false);
+				btnSupprimer.setEnabled(false);
+
+				tableArtistes.clearSelection();
+				
 			}else if(e.getSource() == btnAjouter) {
 				
 				if(!txtNom.getText().isEmpty()) {
@@ -453,6 +465,22 @@ public class GestionArtistes extends JFrame {
 				
 			}else if(e.getSource() == btnSupprimer) {
 				
+				int reponse = JOptionPane.showConfirmDialog(null, "Voulez-vous vraiment supprimer cet élément?", "Suppression", JOptionPane.YES_NO_OPTION);
+				
+				if(reponse == 0) {
+					
+					controleur.deleteArtiste((int)artistTableModel.getValueAt(tableArtistes.getSelectedRow(), 0));
+					
+					artistTableModel.refresh(controleur.getListeArtistes());
+					
+					artistTableModel.fireTableDataChanged();
+					
+				}else if(reponse == 1) {
+					
+					
+					
+				}
+				
 			}else if (e.getSource() == btnAnnuler) {
 				btnAjouter.setEnabled(false);
 				
@@ -460,7 +488,12 @@ public class GestionArtistes extends JFrame {
 				txtNom.setText("");
 				checkBoxMembre.setSelected(false);
 				
+				btnModifier.setEnabled(false);
+				btnSupprimer.setEnabled(false);
+				
 				btnAnnuler.setEnabled(false);
+				
+				tableArtistes.clearSelection();
 			}
 		}
 	}
@@ -476,7 +509,7 @@ public class GestionArtistes extends JFrame {
 				albums.clear();
 				listeNomsAlbums.clear();
 				
-				albums = controleur.getListeAlbums(tableArtistes.getSelectedRow() + 1);
+				albums = controleur.getListeAlbums((int)artistTableModel.getValueAt(tableArtistes.getSelectedRow(), 0) );
 				
 				for(Album album : albums) {
 					

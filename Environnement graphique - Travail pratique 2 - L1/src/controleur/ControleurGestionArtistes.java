@@ -25,6 +25,12 @@ public class ControleurGestionArtistes {
 		
 	}
 	
+	public void deleteArtiste(int idArtiste) {
+		
+		gestionnaireArtistes.deleteArtiste(idArtiste);
+		
+	}
+	
 	public ArrayList<Artiste> getListeArtistes () {
 		return gestionnaireArtistes.getArtistes();
 	}
