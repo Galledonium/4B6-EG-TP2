@@ -45,8 +45,8 @@ public class ControleurGestionArtistes {
 		
 	}
 	
-	public void modifier(vue.GestionArtistes vue){
-		modification = new ModificationArtiste(vue);
+	public void modifier(vue.GestionArtistes vue, Artiste artiste){
+		modification = new ModificationArtiste(vue, artiste);
 		modification.setVisible(true);
 	}
 	

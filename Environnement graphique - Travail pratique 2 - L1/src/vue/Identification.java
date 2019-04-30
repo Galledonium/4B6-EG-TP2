@@ -93,7 +93,7 @@ public class Identification extends JFrame {
 	}
 	
 	private void createPasswordInputField () {
-		lblPassword.setText("Nom d'utilisateur");
+		lblPassword.setText("Mot de passe");
 		lblPassword.setFont(new Font("Arial", Font.PLAIN, 25));
 		lblPassword.setBounds(150, 145, 200, 35);
 		
@@ -212,6 +212,9 @@ public class Identification extends JFrame {
 				controleur.quitter();
 			}else if (e.getSource() == findButton("Valider")) {
 				controleur.valider();
+				
+				txtUsername.setText(null);
+				pwPassword.setText(null);
 			}
 		}
 		

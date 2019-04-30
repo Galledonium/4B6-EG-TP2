@@ -50,39 +50,32 @@ public class GestionArtistes {
 			statement = connexion.createStatement();
 			
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//System.out.println("Pilote chargé\n"); //TODO Retirer une fois l'app terminé
 		catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	
 	private void close() {
-		
 		try {
 			if (statement != null) {
 				statement.close();
 			}
-				
+			
 			if (connexion != null) {
 				connexion.close();
 			}
 		}catch (SQLException se) {
 			System.out.println("ERREUR : " + se);
 		}
-	
 	}
 
 	public ArrayList<Artiste> getArtistes () {
-		
 		listeArtistes.clear();
 		
 		try {
-			
 			this.open();
 			
 			request = "SELECT * FROM Artistes;";
@@ -115,9 +108,7 @@ public class GestionArtistes {
 		}catch (SQLException se) {
 			System.out.println("ERREUR SQL : " + se);
 		}finally {
-			
 			this.close();
-			
 		}
 		
 		return listeArtistes;
@@ -136,7 +127,6 @@ public class GestionArtistes {
 			jeuResultats = statement.executeQuery(request);
 			
 			while(jeuResultats.next()) {
-				
 				int id = jeuResultats.getInt("id");
 				String nom = jeuResultats.getString("nom");
 				boolean isMembre = jeuResultats.getBoolean("isMembre");
@@ -145,7 +135,6 @@ public class GestionArtistes {
 				Artiste artiste = new Artiste(id, nom, isMembre, photo);
 				
 				listeArtistes.add(artiste);
-				
 			}
 			
 			statement.executeUpdate(request);
@@ -154,19 +143,13 @@ public class GestionArtistes {
 			// TODO Auto-generated catch block
 			System.out.println("ERREUR SQL : " + se);
 		}finally {
-			
 			this.close();
-			
 		}
 		
 		return listeArtistes;
-		
 	}
 	
 	public int getLastIndex() {
-		
-		
-		
 		try {
 			
 			this.open();
@@ -176,22 +159,17 @@ public class GestionArtistes {
 			jeuResultats = statement.executeQuery(request);
 			
 			while(jeuResultats.next()) {
-				
 				nbrEnregistrement = jeuResultats.getInt("id");
-				
 			}
 			
 		} catch (SQLException se) {
 			// TODO Auto-generated catch block
 			System.out.println("ERREUR SQL : " + se);
 		}finally {
-			
 			this.close();
-			
 		}
 		
 		return nbrEnregistrement + 1;
-			
 	}
 
 	public void addArtiste(Artiste artiste) {
@@ -205,7 +183,6 @@ public class GestionArtistes {
 									+ artiste.getPhoto() + "')";
 			
 		try {
-			
 			this.open();
 			
 			statement.executeUpdate(request);
@@ -215,17 +192,42 @@ public class GestionArtistes {
 		}catch (SQLException se) {
 				System.out.println("ERREUR SQL : " + se);
 		}finally {
-			
 			this.close();
-			
 		}
-			
 	}
 
-	public void modifierArtiste(String nom, boolean isMembre) {
+	public void modifierArtiste(Artiste artiste) {
+		listeArtistes.clear();
 		
+		request = "UPDATE Artistes SET nom = \"" + artiste.getNom() + "\", isMembre = \"" + (artiste.getMembre() ? 1 : 0) + "\" WHERE id = " + artiste.getID() + ";";
 		
-		
+		try {
+			this.open();
+			
+			statement.executeUpdate(request);
+			
+			request = "SELECT * FROM Artistes;";
+			
+			jeuResultats = statement.executeQuery(request);
+			
+			while(jeuResultats.next()) {
+				int id = jeuResultats.getInt("id");
+				String nom = jeuResultats.getString("nom");
+				boolean isMembre = jeuResultats.getBoolean("isMembre");
+				String photo = jeuResultats.getString("photo");
+				
+				Artiste artisteTemp = new Artiste(id, nom, isMembre, photo);
+				
+				listeArtistes.add(artisteTemp);
+				
+				System.out.println("ID : " + id + "\tNom : " + nom + "\tEstMembre : " + isMembre + "\tPhoto : " + photo); // TODO
+			}
+									
+		}catch (SQLException se) {
+				System.out.println("ERREUR SQL : " + se);
+		}finally {
+			this.close();
+		}
 	}
 
 	public void deleteArtiste(int idArtiste) {
@@ -233,21 +235,15 @@ public class GestionArtistes {
 		request = "DELETE FROM Artistes WHERE id = " + idArtiste + ";";
 
 		try {
-
 			this.open();
 			
 			statement.executeUpdate(request);
 
 				
 		}catch (SQLException se) {
-			
 			System.out.println("ERREUR SQL : " + se);
-			
 		}finally {
-
 			this.close();
-
 		}
-
 	}
 }

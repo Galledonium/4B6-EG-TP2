@@ -3,8 +3,8 @@ package vue;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -46,19 +46,19 @@ public class ChoixTraitement extends JDialog {
 		//Initiatisation du bouton Traitement des artistes et de ses paramètres
 		choixTraitementArtistes = new JButton("Traitement des artistes");
 		choixTraitementArtistes.setBounds(75, 80, 200, 200);
-		choixTraitementArtistes.addMouseListener(new ButtonListener());
+		choixTraitementArtistes.addActionListener(new ButtonListener());
 		
 		//Initiatisation du bouton Traitement des albums et de ses paramètres
 		choixTraitementAlbums = new JButton("Traitement des albums");
 		choixTraitementAlbums.setBounds(300, 80, 200, 200);
-		choixTraitementAlbums.addMouseListener(new ButtonListener());
+		choixTraitementAlbums.addActionListener(new ButtonListener());
 		
 		choixTraitementAlbums.setEnabled(false);
 		
 		//Initiatisation du bouton Quitter et de ses paramètres
 		choixQuitter = new JButton("Quitter");
 		choixQuitter.setBounds(510, 330, 80, 35);
-		choixQuitter.addMouseListener(new ButtonListener());
+		choixQuitter.addActionListener(new ButtonListener());
 		
 		//Ajout du bouton Quitter dans le toolbar et ajout de ses paramètres
 		barreOutils.add(choixQuitter);
@@ -100,11 +100,10 @@ public class ChoixTraitement extends JDialog {
 	     setLocationRelativeTo (null);
 	}
 	
-	private class ButtonListener extends MouseAdapter{
-		
+	private class ButtonListener implements ActionListener{
+
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			
+		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == choixTraitementArtistes) {
 				controleur.traiterArtiste();
 			}else if(e.getSource() == choixTraitementAlbums) {

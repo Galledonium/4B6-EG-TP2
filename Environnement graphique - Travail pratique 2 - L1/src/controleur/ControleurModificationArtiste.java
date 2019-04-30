@@ -1,5 +1,6 @@
 package controleur;
 
+import modele.Artiste;
 import modele.GestionArtistes;
 
 public class ControleurModificationArtiste {
@@ -12,9 +13,9 @@ public class ControleurModificationArtiste {
 		
 	}
 	
-	public void modifierArtiste(String nom, boolean isMembre) {
+	public void modifierArtiste(Artiste artiste) {
 		
-		gestionnaire.modifierArtiste(nom, isMembre);
+		gestionnaire.modifierArtiste(artiste);
 		
 	}
 	
