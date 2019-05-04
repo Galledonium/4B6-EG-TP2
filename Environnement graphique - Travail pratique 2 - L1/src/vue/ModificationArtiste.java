@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -33,32 +32,6 @@ public class ModificationArtiste extends JDialog {
 	private GestionArtistes parent;
 	
 	private Artiste artiste;
-	
-	public ModificationArtiste () { // TODO Enlever
-		setTitle("Modification de l'artiste");
-		setSize(600, 320);
-		setResizable(false);
-		getContentPane().setLayout(null);
-		centerWindow();
-		
-		controleur = new ControleurModificationArtiste();
-		
-		title = new JLabel();
-		lblNom = new JLabel();
-		lblMembre = new JLabel();
-		
-		txtNom = new JTextField();
-		
-		checkBoxMembre = new JCheckBox();
-		
-		btnModifier = new JButton();
-		btnAnnuler = new JButton();
-		
-		btnModifier.addActionListener(new BoutonListener());
-		btnAnnuler.addActionListener(new BoutonListener());
-		
-		buildInterface();
-	}
 	
 	public ModificationArtiste (GestionArtistes parent, Artiste artiste) {
 		setTitle("Modification de l'artiste");
@@ -130,17 +103,18 @@ public class ModificationArtiste extends JDialog {
 	}
 	
 	private class BoutonListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == btnModifier) {
-				
 				artiste.setNom(txtNom.getText());
 				artiste.isMembre(checkBoxMembre.isSelected());
 				
 				controleur.modifierArtiste(artiste);
 				
-				parent.refreshTable();
+				// The parent needs to be shaken ... he's getting old ?
+				parent.shake();
+				
+				dispose();
 			}else if (e.getSource() == btnAnnuler) {
 				txtNom.setText(null);
 				checkBoxMembre.setSelected(false);
@@ -148,7 +122,6 @@ public class ModificationArtiste extends JDialog {
 				dispose();
 			}
 		}
-		
 	}
 	
 	private void centerWindow() {

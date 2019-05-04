@@ -17,8 +17,6 @@ private String url;
 	private Statement statement;
 	private ResultSet jeuResultats;
 	
-	private int nbrEnregistrement;
-	
 	private ArrayList<Album> listeAlbums;
 	
 	private String request;
@@ -45,10 +43,8 @@ private String url;
 			
 			statement = connexion.createStatement();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -73,7 +69,6 @@ private String url;
 	
 	public ArrayList<Album> getAlbums (int idArtiste) {
 		try {
-			
 			open();
 			
 			request = "SELECT * FROM Albums WHERE idArtiste = " + idArtiste + ";";
@@ -85,25 +80,56 @@ private String url;
 				String titre = jeuResultats.getString("titre");
 				String genre = jeuResultats.getString("genre");
 				int anneeSortie = jeuResultats.getInt("anneeSortie");
+				String photo = jeuResultats.getString("photo");
 				
-				Album album = new Album(id, titre, genre, anneeSortie);
+				Album album = new Album(id, titre, genre, anneeSortie, photo);
 				
 				listeAlbums.add(album);
-				
-				System.out.println(id + titre + genre + anneeSortie); // TODO
 			}
+		}catch (SQLException se) {
+			System.out.println("ERREUR SQL : " + se);
+		}finally {
+			close();
+		}
+		
+		return listeAlbums;
+	}
+	
+	public String getImage (Album album) {
+		String image = null;
+		
+		try {
+			open();
 			
-			// System.out.println("\n" + nbrEnregistrement);
-			System.out.println("\nConnexion établie"); // TODO Retirer
+			request = "SELECT photo FROM Albums WHERE id = " + album.getID() + ";";
+			
+			jeuResultats = statement.executeQuery(request);
+			
+			while (jeuResultats.next()) {
+				image = jeuResultats.getString("photo");
+			}
+		}catch (SQLException se) {
+			System.out.println("ERREUR SQL : " + se);
+		}finally {
+			close();
+		}
+		
+		return image;
+	}
+	
+	public void deleteAlbum(int idArtiste) {
+		
+		request = "DELETE FROM Albums WHERE idArtiste = " + idArtiste + ";";
+
+		try {
+			open();
+			
+			statement.executeUpdate(request);
 			
 		}catch (SQLException se) {
 			System.out.println("ERREUR SQL : " + se);
 		}finally {
-			
 			close();
-			
 		}
-		
-		return listeAlbums;
 	}
 }

@@ -4,35 +4,37 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-public class ModeleArtiste extends AbstractTableModel {
+public class ModeleTableArtiste extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	
 	private ArrayList<Artiste> data;
 	
 	private final String [] columns = {"No", "Nom", "Membre"};
 	
-	public ModeleArtiste(ArrayList<Artiste> data) {
+	public ModeleTableArtiste(ArrayList<Artiste> data) {
 		this.data = data;
 	}
 	
 	public void deleteData() {
         int rows = getRowCount();
+        
         if (rows == 0) {
             return;
         }
+        
         data.clear();
+        
         fireTableRowsDeleted(0, rows - 1);
     }
 	
 	public void refresh (ArrayList<Artiste> data) {
 		this.data = data;
+		
 		this.fireTableDataChanged();
 	}
 	
-	public int getSelectedIndex () {
-		// TODO
-		
-		return 0;
+	public ArrayList<Artiste> getData (){
+		return this.data;
 	}
 	
 	@Override
